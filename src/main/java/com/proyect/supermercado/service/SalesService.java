@@ -60,5 +60,20 @@ public class SalesService {
         return list;
     }
 
+    public SaleResponseDTO getSaleId(Long id){
+        Sales sale =salesRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("id not found "));
+
+        SaleResponseDTO response = new SaleResponseDTO();
+        response.setId(sale.getId());
+        response.setIdEmpleado(sale.getIdEmpleado());
+        response.setTotal(sale.getTotal());
+        response.setDateSale(sale.getDateSale());
+        response.setVat(sale.getVat());
+        response.setSubTotal(sale.getSubTotal());
+        response.setState(sale.getState());
+
+        return response;
+    }
 
 }
