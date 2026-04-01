@@ -35,5 +35,11 @@ public class DetailSaleController {
         return ResponseEntity.ok(responseDTO);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<DetailSaleResponseDTO> updateDetail(@PathVariable Long id, @RequestBody DetailSaleRequestDTO request){
+        DetailSaleResponseDTO response = detailSaleService.detailsUpdate(id, request)
+                .orElseThrow(()->new RuntimeException("el id no fue encontrado"));
+        return ResponseEntity.ok(response);
+    }
 
 }
