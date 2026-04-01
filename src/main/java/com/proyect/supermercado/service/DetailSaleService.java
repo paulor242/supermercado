@@ -114,7 +114,47 @@ public class DetailSaleService {
         return responseDTO;
     }
 
+    public Optional<DetailSaleResponseDTO> detailsUpdate (Long id, DetailSaleRequestDTO requestDTO){
+        Optional<DetailSale> optionalDetail = detailSalesRepository.findById(id);
+        if (optionalDetail.isPresent()){
+            DetailSale detail = optionalDetail.get();
+            detail.setIdProduct(requestDTO.getIdProduct());
+            detail.setAmount(requestDTO.getAmount());
+            detail.setUnitPrice(requestDTO.getUnitPrice());
+            detail.setIdProduct(requestDTO.getIdProduct());
 
+            if (requestDTO.getSales()!= null) {
+                Sales sale = salesRepository.findById(requestDTO.getSales())
+                        .orElseThrow(() -> new RuntimeException("venta no encontrada con ese id"));
+                detail.setSales(sale);
+            }
+
+            DetailSale detailUpdate = detailSalesRepository.save(detail);
+
+            DetailSaleResponseDTO response = new DetailSaleResponseDTO();
+            response.setId(detailUpdate.getId());
+            response.setAmount(detailUpdate.getAmount());
+            response.setIdProduct(detail.getIdProduct());
+            response.setUnitPrice(detailUpdate.getUnitPrice());
+            response.setSubTotal(detailUpdate.getSubTotal());
+
+            if (detailUpdate.getSales()!=null){
+                SaleResponseDTO responseDTO = new SaleResponseDTO();
+                responseDTO.setId(detailUpdate.getSales().getId());
+                responseDTO.setVat(detailUpdate.getSales().getVat());
+                responseDTO.setDateSale(detailUpdate.getSales().getDateSale());
+                responseDTO.setTotal(detailUpdate.getSales().getTotal());
+                responseDTO.setState(detail.getSales().getState());
+                responseDTO.setIdEmpleado(detailUpdate.getSales().getIdEmpleado());
+                responseDTO.setSubTotal(detailUpdate.getSales().getSubTotal());
+                response.setSales(responseDTO);
+            }else {
+                response.setSales(null);
+            }
+            return Optional.of(response);
+        }
+        return Optional.empty();
+    }
 
 
 }
