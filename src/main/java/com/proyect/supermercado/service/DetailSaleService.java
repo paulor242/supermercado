@@ -58,6 +58,35 @@ public class DetailSaleService {
         return response;
     }
 
+    public List<DetailSaleResponseDTO> get (){
+        List<DetailSale> detailSales =detailSalesRepository.findAll();
+        List<DetailSaleResponseDTO> list = new ArrayList<>();
+
+        for (DetailSale detailSale: detailSales){
+            DetailSaleResponseDTO response = new DetailSaleResponseDTO();
+            response.setId(detailSale.getId());
+            response.setIdProduct(detailSale.getIdProduct());
+            response.setAmount(detailSale.getAmount());
+            response.setUnitPrice(detailSale.getUnitPrice());
+            response.setSubTotal(detailSale.getSubTotal());
+            if(detailSale.getSales()!=null){
+                SaleResponseDTO responseDTO = new SaleResponseDTO();
+                responseDTO.setId(detailSale.getSales().getId());
+                responseDTO.setVat(detailSale.getSales().getVat());
+                responseDTO.setDateSale(detailSale.getSales().getDateSale());
+                responseDTO.setState(detailSale.getSales().getState());
+                responseDTO.setIdEmpleado(detailSale.getSales().getIdEmpleado());
+                responseDTO.setSubTotal(detailSale.getSales().getSubTotal());
+                responseDTO.setTotal(detailSale.getSales().getTotal());
+                response.setSales(responseDTO);
+            }else {
+                response.setSales(null);
+            }
+            list.add(response);
+        }
+        return list;
+    }
+
 
 
 }
