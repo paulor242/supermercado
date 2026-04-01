@@ -23,6 +23,11 @@ public class DetailSaleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping
+    public ResponseEntity<List<DetailSaleResponseDTO>>getDetails(){
+        List<DetailSaleResponseDTO> response =detailSaleService.get();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 
 }
