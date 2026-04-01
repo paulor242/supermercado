@@ -34,4 +34,11 @@ public class SaleController {
         SaleResponseDTO responseDTO = sales.getSaleId(id);
         return ResponseEntity.ok(responseDTO);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<SaleResponseDTO>update(@PathVariable Long id, @RequestBody SaleRequestDTO requestDTO){
+        SaleResponseDTO responseDTO= sales.updateSale(id, requestDTO)
+                .orElseThrow(()->new RuntimeException("venta no encontrada"));
+        return ResponseEntity.ok(responseDTO);
+    }
 }
