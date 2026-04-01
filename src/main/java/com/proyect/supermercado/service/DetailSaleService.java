@@ -87,6 +87,34 @@ public class DetailSaleService {
         return list;
     }
 
+    public DetailSaleResponseDTO getForId(Long id){
+        DetailSale detail = detailSalesRepository.findById(id)
+                .orElseThrow(()->new RuntimeException("el id del registro de la venta no fue encontrado "));
+        DetailSaleResponseDTO responseDTO = new DetailSaleResponseDTO();
+        responseDTO.setId(detail.getId());
+        responseDTO.setAmount(detail.getAmount());
+        responseDTO.setIdProduct(detail.getIdProduct());
+        responseDTO.setSubTotal(detail.getSubTotal());
+        responseDTO.setUnitPrice(detail.getUnitPrice());
+
+        if (detail.getSales()!= null){
+            SaleResponseDTO response = new SaleResponseDTO();
+            response.setId(detail.getSales().getId());
+            response.setDateSale(detail.getSales().getDateSale());
+            response.setVat(detail.getSales().getVat());
+            response.setIdEmpleado(detail.getSales().getIdEmpleado());
+            response.setTotal(detail.getSales().getTotal());
+            response.setState(detail.getSales().getState());
+            response.setSubTotal(detail.getSales().getSubTotal());
+            responseDTO.setSales(response);
+
+        }else {
+            responseDTO.setSales(null);
+        }
+        return responseDTO;
+    }
+
+
 
 
 }
