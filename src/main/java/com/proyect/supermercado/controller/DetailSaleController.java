@@ -28,8 +28,9 @@ public class DetailSaleController {
         List<DetailSaleResponseDTO> response =detailSaleService.get();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    @GetMapping ("/{id}")
-    public  ResponseEntity<DetailSaleResponseDTO> getUSer(@PathVariable Long id ){
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DetailSaleResponseDTO> getSale(@PathVariable Long id) {
         DetailSaleResponseDTO responseDTO = detailSaleService.getForId(id);
         return ResponseEntity.ok(responseDTO);
     }
