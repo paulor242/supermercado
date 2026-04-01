@@ -41,4 +41,14 @@ public class SaleController {
                 .orElseThrow(()->new RuntimeException("venta no encontrada"));
         return ResponseEntity.ok(responseDTO);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity <SaleResponseDTO>delete(@PathVariable Long id){
+        Boolean deleted =sales.delete(id);
+        if (deleted){
+            return ResponseEntity.noContent().build();
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
