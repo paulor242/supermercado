@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -19,9 +21,7 @@ public class SaleController {
     public ResponseEntity<SaleResponseDTO> create (@RequestBody SaleRequestDTO request){
         SaleResponseDTO response =sales.saleCreate(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
     }
-
-
-
 
 }
