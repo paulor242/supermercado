@@ -156,5 +156,15 @@ public class DetailSaleService {
         return Optional.empty();
     }
 
+    public Boolean delete (Long id){
+        Optional<DetailSale>detail = detailSalesRepository.findById(id);
+
+        if (detail.isPresent()){
+            detailSalesRepository.delete(detail.get());
+            return true;
+        }else {
+            return false;
+        }
+    }
 
 }
