@@ -29,4 +29,9 @@ public class SaleController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<SaleResponseDTO>getSaleId(@PathVariable Long id ){
+        SaleResponseDTO responseDTO = sales.getSaleId(id);
+        return ResponseEntity.ok(responseDTO);
+    }
 }
