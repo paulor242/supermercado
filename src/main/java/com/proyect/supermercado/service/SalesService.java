@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -37,6 +39,25 @@ public class SalesService {
         response.setIdEmpleado(sale.getIdEmpleado());
 
         return response;
+    }
+
+    public List <SaleResponseDTO> getSales(){
+        List<Sales> sales = salesRepository.findAll();
+        List<SaleResponseDTO> list = new ArrayList<>();
+
+        for (Sales sale : sales ){
+            SaleResponseDTO response = new SaleResponseDTO();
+            response.setId(sale.getId());
+            response.setState(sale.getState());
+            response.setDateSale(sale.getDateSale());
+            response.setVat(sale.getVat());
+            response.setSubTotal(sale.getSubTotal());
+            response.setTotal(sale.getTotal());
+            response.setIdEmpleado(sale.getIdEmpleado());
+
+            list.add(response);
+        }
+        return list;
     }
 
 }
