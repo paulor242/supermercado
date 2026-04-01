@@ -42,4 +42,14 @@ public class DetailSaleController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity <DetailSaleResponseDTO>delete(@PathVariable Long id){
+        Boolean deleted =detailSaleService.delete(id);
+        if (deleted){
+            return ResponseEntity.noContent().build();
+        }else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
