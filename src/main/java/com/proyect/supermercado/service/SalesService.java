@@ -105,4 +105,14 @@ public class SalesService {
         }
     }
 
+    public boolean delete(Long id) {
+        Optional<Sales> sales = salesRepository.findById(id);
+
+        if (!sales.isEmpty()) {
+            salesRepository.delete(sales.get());
+            return true;
+        }
+        return false;
+    }
+
 }
