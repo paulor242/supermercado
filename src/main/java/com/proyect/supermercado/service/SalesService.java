@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -74,6 +75,34 @@ public class SalesService {
         response.setState(sale.getState());
 
         return response;
+    }
+
+    public Optional<SaleResponseDTO> updateSale(Long id, SaleRequestDTO request){
+        Optional<Sales> optionalSale = salesRepository.findById(id);
+        if (optionalSale.isPresent()){
+            Sales sale = optionalSale.get();
+            sale.setTotal(request.getTotal());
+            sale.setVat(request.getVat());
+            sale.setSubTotal(request.getSubTotal());
+            sale.setDateSale(request.getDateSale());
+            sale.setIdEmpleado(request.getIdEmpleado());
+            sale.setState(request.getState());
+
+            Sales updateSale = salesRepository.save(sale);
+
+            SaleResponseDTO response = new SaleResponseDTO();
+            response.setId(updateSale.getId());
+            response.setDateSale(updateSale.getDateSale());
+            response.setVat(updateSale.getVat());
+            response.setTotal(updateSale.getTotal());
+            response.setState(updateSale.getState());
+            response.setIdEmpleado(updateSale.getIdEmpleado());
+            response.setSubTotal(updateSale.getSubTotal());
+
+            return Optional.of(response);
+        }else {
+            return Optional.empty();
+        }
     }
 
 }
