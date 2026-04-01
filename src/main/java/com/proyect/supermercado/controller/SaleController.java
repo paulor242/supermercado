@@ -23,5 +23,10 @@ public class SaleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
     }
+    @GetMapping
+    public ResponseEntity<List<SaleResponseDTO>>getSale (){
+        List<SaleResponseDTO>response = sales.getSales();
+        return ResponseEntity.ok(response);
+    }
 
 }
