@@ -11,7 +11,9 @@ import com.proyect.supermercado.repository.ProductRepository;
 import com.proyect.supermercado.repository.SalesRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +25,20 @@ import java.util.Optional;
 @Service
 public class DetailSaleService {
     private final DetailSalesRepository detailSalesRepository;
-    private  final SalesRepository salesRepository;
+    private final SalesRepository salesRepository;
     private final ProductRepository productRepository;
-    public DetailSaleResponseDTO create(DetailSaleRequestDTO request){
-        Product product  = productRepository.findById(request.getIdProduct())
-                .orElseThrow(()-> new RuntimeException("producto no encontreado "));
-        if (product.getStock()<request.getAmount()){
-            throw new RuntimeException("stok insuficiente, disponible "+product.getStock());
+
+    public DetailSaleResponseDTO create(DetailSaleRequestDTO request) {
+
+        // Verificar que el producto existe y tiene stock suficiente
+        Product product = productRepository.findById(request.getIdProduct())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
+
+        if (product.getStock() < request.getAmount()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Stock insuficiente. Disponible: " + product.getStock() + ", solicitado: " + request.getAmount());
         }
+
         DetailSale detailSale = new DetailSale();
         detailSale.setAmount(request.getAmount());
         detailSale.setSubTotal(request.getSubTotal());
@@ -39,18 +47,18 @@ public class DetailSaleService {
 
 
         Sales sale = salesRepository.findById(request.getSales())
-                        .orElseThrow(()->new RuntimeException("venta no encontrada"));
+                .orElseThrow(() -> new RuntimeException("venta no encontrada"));
         detailSale.setSales(sale);
 
         detailSalesRepository.save(detailSale);
 
-        DetailSaleResponseDTO response= new DetailSaleResponseDTO();
+        DetailSaleResponseDTO response = new DetailSaleResponseDTO();
         response.setId(detailSale.getId());
         response.setAmount(detailSale.getAmount());
         response.setUnitPrice(detailSale.getUnitPrice());
         response.setSubTotal(detailSale.getSubTotal());
         response.setIdProduct(detailSale.getIdProduct());
-        if(detailSale.getSales() !=null){
+        if (detailSale.getSales() != null) {
             SaleResponseDTO detailDTO = new SaleResponseDTO();
             detailDTO.setId(detailSale.getSales().getId());
             detailDTO.setSubTotal(detailSale.getSubTotal());
@@ -60,24 +68,23 @@ public class DetailSaleService {
             detailDTO.setState(detailSale.getSales().getState());
             detailDTO.setIdEmpleado(detailSale.getSales().getIdEmpleado());
             response.setSales((detailDTO));
-
         }
 
         return response;
     }
 
-    public List<DetailSaleResponseDTO> get (){
-        List<DetailSale> detailSales =detailSalesRepository.findAll();
+    public List<DetailSaleResponseDTO> get() {
+        List<DetailSale> detailSales = detailSalesRepository.findAll();
         List<DetailSaleResponseDTO> list = new ArrayList<>();
 
-        for (DetailSale detailSale: detailSales){
+        for (DetailSale detailSale : detailSales) {
             DetailSaleResponseDTO response = new DetailSaleResponseDTO();
             response.setId(detailSale.getId());
             response.setIdProduct(detailSale.getIdProduct());
             response.setAmount(detailSale.getAmount());
             response.setUnitPrice(detailSale.getUnitPrice());
             response.setSubTotal(detailSale.getSubTotal());
-            if(detailSale.getSales()!=null){
+            if (detailSale.getSales() != null) {
                 SaleResponseDTO responseDTO = new SaleResponseDTO();
                 responseDTO.setId(detailSale.getSales().getId());
                 responseDTO.setVat(detailSale.getSales().getVat());
@@ -87,7 +94,7 @@ public class DetailSaleService {
                 responseDTO.setSubTotal(detailSale.getSales().getSubTotal());
                 responseDTO.setTotal(detailSale.getSales().getTotal());
                 response.setSales(responseDTO);
-            }else {
+            } else {
                 response.setSales(null);
             }
             list.add(response);
@@ -95,9 +102,9 @@ public class DetailSaleService {
         return list;
     }
 
-    public DetailSaleResponseDTO getForId(Long id){
+    public DetailSaleResponseDTO getForId(Long id) {
         DetailSale detail = detailSalesRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("el id del registro de la venta no fue encontrado "));
+                .orElseThrow(() -> new RuntimeException("el id del registro de la venta no fue encontrado "));
         DetailSaleResponseDTO responseDTO = new DetailSaleResponseDTO();
         responseDTO.setId(detail.getId());
         responseDTO.setAmount(detail.getAmount());
@@ -105,7 +112,7 @@ public class DetailSaleService {
         responseDTO.setSubTotal(detail.getSubTotal());
         responseDTO.setUnitPrice(detail.getUnitPrice());
 
-        if (detail.getSales()!= null){
+        if (detail.getSales() != null) {
             SaleResponseDTO response = new SaleResponseDTO();
             response.setId(detail.getSales().getId());
             response.setDateSale(detail.getSales().getDateSale());
@@ -115,23 +122,22 @@ public class DetailSaleService {
             response.setState(detail.getSales().getState());
             response.setSubTotal(detail.getSales().getSubTotal());
             responseDTO.setSales(response);
-
-        }else {
+        } else {
             responseDTO.setSales(null);
         }
         return responseDTO;
     }
 
-    public Optional<DetailSaleResponseDTO> detailsUpdate (Long id, DetailSaleRequestDTO requestDTO){
+    public Optional<DetailSaleResponseDTO> detailsUpdate(Long id, DetailSaleRequestDTO requestDTO) {
         Optional<DetailSale> optionalDetail = detailSalesRepository.findById(id);
-        if (optionalDetail.isPresent()){
+        if (optionalDetail.isPresent()) {
             DetailSale detail = optionalDetail.get();
             detail.setIdProduct(requestDTO.getIdProduct());
             detail.setAmount(requestDTO.getAmount());
             detail.setUnitPrice(requestDTO.getUnitPrice());
             detail.setIdProduct(requestDTO.getIdProduct());
 
-            if (requestDTO.getSales()!= null) {
+            if (requestDTO.getSales() != null) {
                 Sales sale = salesRepository.findById(requestDTO.getSales())
                         .orElseThrow(() -> new RuntimeException("venta no encontrada con ese id"));
                 detail.setSales(sale);
@@ -146,7 +152,7 @@ public class DetailSaleService {
             response.setUnitPrice(detailUpdate.getUnitPrice());
             response.setSubTotal(detailUpdate.getSubTotal());
 
-            if (detailUpdate.getSales()!=null){
+            if (detailUpdate.getSales() != null) {
                 SaleResponseDTO responseDTO = new SaleResponseDTO();
                 responseDTO.setId(detailUpdate.getSales().getId());
                 responseDTO.setVat(detailUpdate.getSales().getVat());
@@ -156,7 +162,7 @@ public class DetailSaleService {
                 responseDTO.setIdEmpleado(detailUpdate.getSales().getIdEmpleado());
                 responseDTO.setSubTotal(detailUpdate.getSales().getSubTotal());
                 response.setSales(responseDTO);
-            }else {
+            } else {
                 response.setSales(null);
             }
             return Optional.of(response);
@@ -164,15 +170,14 @@ public class DetailSaleService {
         return Optional.empty();
     }
 
-    public Boolean delete (Long id){
-        Optional<DetailSale>detail = detailSalesRepository.findById(id);
+    public Boolean delete(Long id) {
+        Optional<DetailSale> detail = detailSalesRepository.findById(id);
 
-        if (detail.isPresent()){
+        if (detail.isPresent()) {
             detailSalesRepository.delete(detail.get());
             return true;
-        }else {
+        } else {
             return false;
         }
     }
-
 }
