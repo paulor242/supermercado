@@ -45,6 +45,7 @@ public class DetailSaleService {
         detailSale.setUnitPrice(request.getUnitPrice());
         detailSale.setIdProduct(request.getIdProduct());
 
+
         Sales sale = salesRepository.findById(request.getSales())
                 .orElseThrow(() -> new RuntimeException("venta no encontrada"));
         detailSale.setSales(sale);
