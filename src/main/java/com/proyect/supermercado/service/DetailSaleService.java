@@ -29,8 +29,6 @@ public class DetailSaleService {
     private final ProductRepository productRepository;
 
     public DetailSaleResponseDTO create(DetailSaleRequestDTO request) {
-
-        // Verificar que el producto existe y tiene stock suficiente
         Product product = productRepository.findById(request.getIdProduct())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
 
