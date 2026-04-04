@@ -4,8 +4,10 @@ import com.proyect.supermercado.dto.DetailSaleRequestDTO;
 import com.proyect.supermercado.dto.DetailSaleResponseDTO;
 import com.proyect.supermercado.dto.SaleResponseDTO;
 import com.proyect.supermercado.entity.DetailSale;
+import com.proyect.supermercado.entity.Product;
 import com.proyect.supermercado.entity.Sales;
 import com.proyect.supermercado.repository.DetailSalesRepository;
+import com.proyect.supermercado.repository.ProductRepository;
 import com.proyect.supermercado.repository.SalesRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +24,19 @@ import java.util.Optional;
 public class DetailSaleService {
     private final DetailSalesRepository detailSalesRepository;
     private  final SalesRepository salesRepository;
+    private final ProductRepository productRepository;
     public DetailSaleResponseDTO create(DetailSaleRequestDTO request){
-
+        Product product  = productRepository.findById(request.getIdProduct())
+                .orElseThrow(()-> new RuntimeException("producto no encontreado "));
+        if (product.getStock()<request.getAmount()){
+            throw new RuntimeException("stok insuficiente, disponible "+product.getStock());
+        }
         DetailSale detailSale = new DetailSale();
         detailSale.setAmount(request.getAmount());
         detailSale.setSubTotal(request.getSubTotal());
         detailSale.setUnitPrice(request.getUnitPrice());
         detailSale.setIdProduct(request.getIdProduct());
+
 
         Sales sale = salesRepository.findById(request.getSales())
                         .orElseThrow(()->new RuntimeException("venta no encontrada"));
