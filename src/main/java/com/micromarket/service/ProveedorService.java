@@ -16,6 +16,8 @@ public class ProveedorService {
         this.repository = repository;
     }
 
+
+
     public ProveedorDTO crear(ProveedorDTO dto) {
         if (repository.existsByNit(dto.getNit())) {
             throw new IllegalArgumentException("El NIT ya está registrado en la base de datos");
