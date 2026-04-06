@@ -27,6 +27,8 @@ public class Sales {
 
     @ManyToOne()
     @JoinColumn(name=" idEmpleado")
-    private Long idempleado;
+    private Empleado idempleado;
 
+    public void setIdempleado(Long id) {
+    }
 }
