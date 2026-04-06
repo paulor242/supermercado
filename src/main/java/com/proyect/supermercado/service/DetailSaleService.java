@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +38,11 @@ public class DetailSaleService {
                     "Stock insuficiente. Disponible: " + product.getStock() + ", solicitado: " + request.getAmount());
         }
 
+        Double unitPrice = product.getPrice();
+        BigDecimal subTotal = BigDecimal.valueOf(request.getAmount()).multiply(BigDecimal.valueOf(unitPrice));
+        BigDecimal vat = subTotal.multiply(new BigDecimal("0.19"));
+        BigDecimal total = subTotal.add(vat);
+
         DetailSale detailSale = new DetailSale();
         detailSale.setAmount(request.getAmount());
         detailSale.setSubTotal(request.getSubTotal());
@@ -49,6 +55,9 @@ public class DetailSaleService {
         detailSale.setSales(sale);
 
         detailSalesRepository.save(detailSale);
+
+        product.setStock(product.getStock()-request.getAmount());
+        productRepository.save(product);
 
         DetailSaleResponseDTO response = new DetailSaleResponseDTO();
         response.setId(detailSale.getId());
