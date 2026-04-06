@@ -13,5 +13,5 @@ public class SaleResponseDTO {
     private BigDecimal vat;
     private BigDecimal total;
     private String state;
-    private Long idEmpleado;
+    private EmpleadoResponseDTO empleado;
 }

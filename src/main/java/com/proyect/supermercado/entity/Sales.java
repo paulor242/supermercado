@@ -25,9 +25,10 @@ public class Sales {
     @Column(name ="state")
     private String state;
 
-    // colocar la relacion con los empleados ManitoOne
-    @Column(name ="idempleado")
-    private Long idEmpleado;
+    @ManyToOne
+    @JoinColumn(name ="idEmpleado")
+    private Empleado empleado;
+
 
 
 
