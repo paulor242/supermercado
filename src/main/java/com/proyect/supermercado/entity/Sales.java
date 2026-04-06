@@ -24,10 +24,9 @@ public class Sales {
     private BigDecimal total;
     @Column(name ="state")
     private String state;
-    @Column(name = "idEmpleado")
-    private Long idEmpleado;
 
-
-
+    @ManyToOne()
+    @JoinColumn(name=" idEmpleado")
+    private Long idempleado;
 
 }

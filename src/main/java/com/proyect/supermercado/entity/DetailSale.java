@@ -20,8 +20,8 @@ public class DetailSale {
     @Column(name ="subTotal")
     private BigDecimal subTotal;
 
-    // colocar la relacion
-    @Column (name ="idProduct")
+    @ManyToOne
+    @JoinColumn(name ="idProduct")
     private Long idProduct;
 
     @ManyToOne
