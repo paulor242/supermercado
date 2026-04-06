@@ -22,7 +22,7 @@ public class DetailSale {
 
     @ManyToOne
     @JoinColumn(name ="idProduct")
-    private Long idProduct;
+    private Product idProduct;
 
     @ManyToOne
     @JoinColumn(name ="idSale")

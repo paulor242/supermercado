@@ -1,14 +1,16 @@
 package com.proyect.supermercado.dto;
 import com.proyect.supermercado.enume.Cargo;
 import jakarta.validation.constraints.*;
+import lombok.Data;
 
+import java.time.LocalDate;
 
+@Data
 public class EmpleadoRequestDTO {
-    @NotBlank
     private String cedula;
-
-    @NotBlank
     private String nombre;
-
-    @NotNull
-    private Cargo cargo;}
+    private Cargo cargo;
+    private LocalDate fecha;
+    private LocalDate fechaIngreso;
+    private Double salario;
+}

@@ -4,6 +4,7 @@ import com.proyect.supermercado.dto.EmpleadoRequestDTO;
 import com.proyect.supermercado.dto.EmpleadoResponseDTO;
 import com.proyect.supermercado.entity.Empleado;
 import com.proyect.supermercado.enume.Cargo;
+import com.proyect.supermercado.exception.ResourceNotFoundException;
 import com.proyect.supermercado.repository.EmpleadoRepository;
 import org.springframework.stereotype.Service;
 
