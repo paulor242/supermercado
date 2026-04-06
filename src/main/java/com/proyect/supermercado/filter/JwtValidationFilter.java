@@ -1,5 +1,6 @@
 package com.proyect.supermercado.filter;
 
+import com.proyect.supermercado.config.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+
+// se realiza la configuracion de todo el jwt se configura que datos son los que va llevar
+//  el jwt se coloca tambien el refresh tocken   y los necesarios revisar el autentication = JwtValidationFilter
+
+
 
 @Component
 public class JwtValidationFilter extends OncePerRequestFilter {
