@@ -4,14 +4,17 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
+
+
+// registra un filtro personalizado para validar tokens JWT (JSON Web Tokens)
+// en todas las peticiones HTTP de la aplicación revisar Autentication = filterconfig .
+
 
 @Component
 public class JwtUtil {
