@@ -1,12 +1,10 @@
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
-public class EmpleadoRequestDTO {
-    @NotBlank
-    private String cedula;
-
-    @NotBlank
-    private String nombre;
-
-    @NotNull
-    private Cargo cargo;}
+public class EmpleadoRequestDTO {private Long id;
+                                 private String cedula;
+                                 private String nombre;
+                                 private Cargo cargo; 
+                                 private LocalDate fecha;
+                                 private LocalDate fechaIngreso;
+                                 private Double salario;}
