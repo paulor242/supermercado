@@ -111,8 +111,14 @@ INSERT INTO user_roles (user_id, role) VALUES (1, 'ADMINISTRADOR');
 INSERT INTO user (username, password) VALUES ('auxiliar', '$2a$10$examplehashedpassword');
 INSERT INTO user_roles (user_id, role) VALUES (2, 'AUXILIAR');
 
+<<<<<<< HEAD
 INSERT INTO supplier (name, contact) VALUES ('Proveedor A', 'contacto@a.com');
 INSERT INTO supplier (name, contact) VALUES ('Proveedor B', 'contacto@b.com');
+=======
+INSERT INTO supplier (name, contact) VALUES ('Supplier A', 'contact@a.com');
+INSERT INTO supplier (name, contact) VALUES ('Supplier B', 'contact@b.com');
+
+>>>>>>> feature/ximena-abastecimiento
 
 INSERT INTO product_supplier (product_id, supplier_id) VALUES (1, 1);
 INSERT INTO product_supplier (product_id, supplier_id) VALUES (2, 2);

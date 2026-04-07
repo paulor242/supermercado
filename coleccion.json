@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "info": {"name": "Gestion Empleados API",
            "_postman_id": "12345-empleados-collection",
@@ -51,3 +52,65 @@
                  "port": "8080",
                  "path": ["api", "empleados", "1"]}}}]
 }
+=======
+{
+  "info": {
+    "name": "Supermarket Restock API",
+    "_postman_id": "12345-restock-collection",
+    "description": "Collection for supermarket restock management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "Create Restock",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"supplierId\": 1,\n  \"details\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 50\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 30\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/restocks",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "restocks"]
+        }
+      }
+    }
+  ]
+}
+>>>>>>> feature/ximena-abastecimiento
