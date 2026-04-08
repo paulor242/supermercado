@@ -23,6 +23,7 @@ import java.util.List;
  * Aquí se define qué rutas son públicas, cuáles requieren token,
  * cómo se cargan los usuarios y cómo se encriptan las contraseñas.
  */
+
 @Configuration
 public class SecurityConfig {
 

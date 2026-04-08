@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 public class Supplier {
 
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
