@@ -1,13 +1,13 @@
 package com.proyect.supermercado.repository;
 
 import com.proyect.supermercado.entity.Sales;
-
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
-
-import java.util.Optional;
-
+/**
+ * Repositorio de ventas.
+ * JpaRepository ya nos da gratis: save, findById, findAll, delete, count, etc.
+ * No necesitamos agregar métodos extra por ahora.
+ */
+// findById ya viene incluido en JpaRepository — no hace falta redefinirlo
 public interface SalesRepository extends JpaRepository<Sales, Long> {
-    Optional<Sales> findById(Long id);
 }
