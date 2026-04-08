@@ -32,7 +32,6 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-
         boolean isProtectedSalesPath = PROTECTED_SALES_PATHS.stream()
                 .anyMatch(path::contains);
 
