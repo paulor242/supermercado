@@ -3,8 +3,6 @@ package com.proyect.supermercado.repository;
 import com.proyect.supermercado.entity.DetailSale;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
-
+// findById ya viene incluido en JpaRepository — no hace falta redefinirlo
 public interface DetailSalesRepository extends JpaRepository <DetailSale, Long> {
-    Optional<DetailSale> findById(Long id);
 }
