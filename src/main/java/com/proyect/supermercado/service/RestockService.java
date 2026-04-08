@@ -1,5 +1,6 @@
 package com.proyect.supermercado.service;
 
+import com.proyect.supermercado.dto.RestockDetailResponseDTO;
 import com.proyect.supermercado.dto.RestockRequestDTO;
 import com.proyect.supermercado.dto.RestockResponseDTO;
 import com.proyect.supermercado.entity.Product;

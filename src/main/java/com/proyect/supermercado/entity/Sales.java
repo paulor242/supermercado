@@ -6,29 +6,25 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Entidad que representa una venta en el supermercado.
+ * Cada registro aquí es una transacción completa con su fecha, montos e impuestos.
+ * La tabla en BD se llama "sales".
+ */
 @Entity
 @Data
-@Table(name ="sales")
+@Table(name = "sales")
 public class Sales {
+
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    @Column (name ="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    @Column (name="dateSale")
-    private LocalDate dateSale;
-    @Column (name ="subTotal")
-    private BigDecimal SubTotal;
-    @Column (name ="vat")
-    private BigDecimal vat;
-    @Column (name ="total")
-    private BigDecimal total;
-    @Column(name ="state")
-    private String state;
 
-    // colocar la relacion con los empleados ManitoOne
-    @Column(name ="idempleado")
-    private Long idEmpleado;
+    @ManyToOne()
+    @JoinColumn(name=" idEmpleado")
+    private Empleado idempleado;
 
-
-
+    public void setIdempleado(Long id) {
+    }
 }

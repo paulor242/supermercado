@@ -5,29 +5,32 @@ server:
 spring:
   application:
     name: supermercado
+
+  # Base de datos H2 en memoria — misma config que application.properties
   datasource:
     url: jdbc:mysql://localhost:3306/supermercado
     username: root
     password: 
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: none
+      ddl-auto: create-drop
     show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-      database-platform: org.hibernate.dialect.MySQLDialect
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
 logging:
   level:
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
-    org.hibernxxaate.type.descriptor.sql.BasicBinder: TRACE
-
-security:
-  jwt:
-    secret-key: alht7XYKujQPw1ourB0c4rIRg4x6RNrqewufShlZoug=
-    tokenExpiration: 600000
+    # Typo corregido: era 'hibernxxaate' — ahora muestra los parámetros de cada query
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
