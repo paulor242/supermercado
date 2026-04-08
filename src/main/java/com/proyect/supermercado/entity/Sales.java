@@ -25,10 +25,7 @@ public class Sales {
     @Column(name ="state")
     private String state;
 
-    @ManyToOne()
-    @JoinColumn(name=" idEmpleado")
+    @ManyToOne
+    @JoinColumn(name = "idEmpleado")
     private Empleado idempleado;
-
-    public void setIdempleado(Long id) {
-    }
 }

@@ -1,8 +1,14 @@
 package com.proyect.supermercado.config;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-// aca se realiza la configuracion necesaria para la encriptacion de la
-// contraseña revisar proyecto autenticacion = AppConfig
-
+@Configuration
 public class AppConfig {
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

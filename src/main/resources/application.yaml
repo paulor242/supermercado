@@ -1,17 +1,17 @@
 server:
-  port: 8080
-
+  port: 3306
+  servlet:
+    context-path: /api/v1
 spring:
   application:
     name: supermercado
 
   # Base de datos H2 en memoria — misma config que application.properties
   datasource:
-    url: jdbc:h2:mem:micromarket
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-
+    url: jdbc:mysql://localhost:3306/supermercado
+    username: root
+    password: 
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:

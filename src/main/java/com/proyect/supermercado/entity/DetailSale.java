@@ -24,6 +24,14 @@ public class DetailSale {
     @JoinColumn(name ="idProduct")
     private Product idProduct;
 
+<<<<<<< HEAD
+=======
+    // TODO: convertir a relación @ManyToOne con la entidad Producto cuando esté disponible
+    @Column(name = "idProduct")
+    private Long idProduct; // ID del producto vendido
+
+    // Relación con la venta padre — muchos detalles pertenecen a una sola venta
+>>>>>>> 523ad6b7b7c3b2ffb17c5fd8f76ed6f4e69f54cb
     @ManyToOne
     @JoinColumn(name ="idSale")
     private Sales sales;

@@ -2,17 +2,16 @@
 -- CREACIÓN DE TABLAS - MÓDULO I COMPLETO
 -- Incluye: Categorías, Productos
 -- ============================================
+create database supermercado;
+use supermercado;
 
 -- 1. TABLA DE CATEGORÍAS
 CREATE TABLE IF NOT EXISTS category (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     description VARCHAR(255),
-    active BOOLEAN NOT NULL DEFAULT TRUE,
-    
-    INDEX idx_category_name (name),
-    INDEX idx_category_active (active)
-) 
+    active BOOLEAN NOT NULL DEFAULT TRUE
+);
 
 -- 2. TABLA DE PRODUCTOS
 
@@ -27,19 +26,69 @@ CREATE TABLE IF NOT EXISTS product (
     category_id BIGINT NOT NULL,                   -- FK a Category
 
     -- Restricciones de llave foránea
-    CONSTRAINT fk_product_category 
-        FOREIGN KEY (category_id) 
+    CONSTRAINT fk_product_category
+        FOREIGN KEY (category_id)
         REFERENCES category(id)
         ON DELETE RESTRICT    -- No eliminar categoría si tiene productos
-        ON UPDATE CASCADE,
-    
-    -- Índices para optimizar búsquedas
-    INDEX idx_product_barcode (barcode),
-    INDEX idx_product_category (category_id),
-    INDEX idx_product_active (active),
-    INDEX idx_product_name (name)
-)
+        ON UPDATE CASCADE
+);
 
+CREATE TABLE supplier (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    nit VARCHAR(50) NOT NULL UNIQUE,
+    phone VARCHAR(20),
+    stated BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE product_supplier (
+    product_id BIGINT,
+    supplier_id BIGINT,
+    PRIMARY KEY (product_id, supplier_id),
+    FOREIGN KEY (product_id) REFERENCES product(id),
+    FOREIGN KEY (supplier_id) REFERENCES supplier(id)
+);
+
+CREATE TABLE user (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    rol VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE employee (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    cedula VARCHAR(20) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    charge ENUM('ADMINISTRADOR', 'CAGERO', 'AUXILIIAR') NOT NULL,
+    date DATE NOT NULL,
+    entry_date DATE NOT NULL,
+    salary DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+create table sale(
+id int primary key auto_increment,
+dateSale date, 
+SubTotal int,
+vat int, 
+total int,
+state varchar (20) default "pending",
+idEmployee bigint,
+foreign key (idEmployee) references employee (id)
+);
+
+create table detailsale(
+id int primary key auto_increment,
+amount int,
+unitPrice int,
+subTotal int,
+idSale int,
+idProduct bigint,
+foreign key (idSale) references sale(id),
+foreign key (idProduct) references product (id)
+);
 -- Datos de prueba para el Módulo 1
 -- Categorías y Productos para un supermercado
 
@@ -104,6 +153,7 @@ INSERT INTO product (name, description, barcode, price, stock, active, category_
 ('Frijoles 500g', 'Frijoles negros 500g', '750100070002', 22.00, 120, TRUE, 7),
 ('Aceite Vegetal 1L', 'Aceite vegetal comestible 1L', '750100070003', 32.00, 100, TRUE, 7),
 ('Sal 1kg', 'Sal yodada 1kg', '750100070004', 12.00, 200, TRUE, 7);
+<<<<<<< HEAD
 
 INSERT INTO user (username, password) VALUES ('admin', '$2a$10$examplehashedpassword');
 INSERT INTO user_roles (user_id, role) VALUES (1, 'ADMINISTRADOR');
@@ -122,3 +172,12 @@ INSERT INTO supplier (name, contact) VALUES ('Supplier B', 'contact@b.com');
 
 INSERT INTO product_supplier (product_id, supplier_id) VALUES (1, 1);
 INSERT INTO product_supplier (product_id, supplier_id) VALUES (2, 2);
+=======
+-- Usuario administrador por defecto para pruebas
+-- Contraseña: "admin" encriptada con BCrypt
+INSERT INTO users (username, password, role) VALUES ('admin_daniela', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMIN');
+
+-- Proveedores de ejemplo para arrancar con datos
+INSERT INTO proveedores (nit, nombre) VALUES ('800123456-1', 'Proveedor A');
+INSERT INTO proveedores (nit, nombre) VALUES ('900987654-2', 'Proveedor B');
+>>>>>>> 523ad6b7b7c3b2ffb17c5fd8f76ed6f4e69f54cb

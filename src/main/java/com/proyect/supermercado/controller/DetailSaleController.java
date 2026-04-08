@@ -19,12 +19,21 @@ public class DetailSaleController {
 
     private final DetailSaleService detailSaleService;
 
+    /**
+     * Crea un nuevo detalle asociado a una venta existente.
+     * El body debe incluir el ID de la venta padre (campo "sales").
+     * Si esa venta no existe, el servicio lanza excepción y devuelve 500.
+     */
     @PostMapping
     public ResponseEntity<DetailSaleResponseDTO> create(@RequestBody DetailSaleRequestDTO request) {
         DetailSaleResponseDTO response = detailSaleService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * Devuelve todos los detalles de todas las ventas.
+     * Cada detalle incluye el objeto completo de su venta padre embebido.
+     */
     @GetMapping
     public ResponseEntity<List<DetailSaleResponseDTO>> getDetails() {
         List<DetailSaleResponseDTO> response = detailSaleService.get();

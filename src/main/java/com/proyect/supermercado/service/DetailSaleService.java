@@ -18,9 +18,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-
+/**
+ * Servicio con la lógica de negocio para los detalles de venta.
+ * Necesita acceso a SalesRepository porque al crear un detalle
+ * hay que verificar que la venta padre realmente exista en BD.
+ */
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -43,6 +46,15 @@ public class DetailSaleService {
         BigDecimal vat = subTotal.multiply(new BigDecimal("0.19"));
         BigDecimal total = subTotal.add(vat);
 
+    private final DetailSalesRepository detailSalesRepository;
+    private final SalesRepository salesRepository;
+
+    /**
+     * Crea un detalle de venta y lo asocia a su venta padre.
+     * Si la venta padre no existe, lanza excepción antes de guardar nada.
+     * La respuesta incluye el objeto completo de la venta embebido.
+     */
+    public DetailSaleResponseDTO create(DetailSaleRequestDTO request) {
         DetailSale detailSale = new DetailSale();
         detailSale.setAmount(request.getAmount());
         detailSale.setSubTotal(request.getSubTotal());
@@ -50,6 +62,7 @@ public class DetailSaleService {
 
 
 
+        // buscamos la venta padre — si no existe, no tiene sentido guardar el detalle
         Sales sale = salesRepository.findById(request.getSales())
                 .orElseThrow(() -> new RuntimeException("venta no encontrada"));
         detailSale.setSales(sale);

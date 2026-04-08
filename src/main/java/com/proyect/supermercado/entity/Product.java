@@ -8,13 +8,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
-@Table(name = "product", 
-       indexes = {
-           @Index(name = "idx_product_barcode", columnList = "barcode"),
-           @Index(name = "idx_product_category", columnList = "category_id"),
-           @Index(name = "idx_product_active", columnList = "active"),
-           @Index(name = "idx_product_name", columnList = "name")
-       })
+@Table(name = "product")
 @Data
 @Builder
 public class Product {
