@@ -1,5 +1,6 @@
 package com.proyect.supermercado.service;
 
+import com.proyect.supermercado.dto.EmpleadoResponseDTO;
 import com.proyect.supermercado.dto.SaleRequestDTO;
 import com.proyect.supermercado.dto.SaleResponseDTO;
 import com.proyect.supermercado.entity.Empleado;
@@ -40,11 +41,11 @@ public class SalesService {
         sale.setDateSale(request.getDateSale());
         sale.setTotal(request.getTotal());
         sale.setVat(request.getVat());
-        sale.setIdempleado(empleado);
         sale.setState(request.getState());
         sale.setSubTotal(request.getSubTotal());
 
-        salesRepository.save(sale);
+
+        salesRepository.save(sale); // después del save, sale.getId() ya tiene el ID de la BD
 
         SaleResponseDTO response = new SaleResponseDTO();
         response.setId(sale.getId());
@@ -53,8 +54,11 @@ public class SalesService {
         response.setVat(sale.getVat());
         response.setState(sale.getState());
         response.setSubTotal(sale.getSubTotal());
-        response.setIdEmpleado(empleado.getId());
 
+        if (sale.getIdempleado()!=null){
+            EmpleadoResponseDTO responseDTO= new EmpleadoResponseDTO();
+            responseDTO.setId(sale.getIdempleado().getId());
+        }
         return response;
     }
 
@@ -74,7 +78,11 @@ public class SalesService {
             response.setVat(sale.getVat());
             response.setSubTotal(sale.getSubTotal());
             response.setTotal(sale.getTotal());
-            response.setIdEmpleado(sale.getIdempleado() != null ? sale.getIdempleado().getId() : null);
+
+            if (sale.getIdempleado()!=null){
+                EmpleadoResponseDTO responseDTO= new EmpleadoResponseDTO();
+                responseDTO.setId(sale.getIdempleado().getId());
+            }
 
             list.add(response);
         }
@@ -97,6 +105,11 @@ public class SalesService {
         response.setVat(sale.getVat());
         response.setSubTotal(sale.getSubTotal());
         response.setState(sale.getState());
+
+        if (sale.getIdempleado()!=null){
+            EmpleadoResponseDTO responseDTO= new EmpleadoResponseDTO();
+            responseDTO.setId(sale.getIdempleado().getId());
+        }
 
         return response;
     }
@@ -129,6 +142,10 @@ public class SalesService {
             response.setState(updateSale.getState());
             response.setIdEmpleado(empleado.getId());
             response.setSubTotal(updateSale.getSubTotal());
+            if (sale.getIdempleado()!=null){
+                EmpleadoResponseDTO responseDTO= new EmpleadoResponseDTO();
+                responseDTO.setId(sale.getIdempleado().getId());
+            }
 
             return Optional.of(response);
         } else {

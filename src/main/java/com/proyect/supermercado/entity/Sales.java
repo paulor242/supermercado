@@ -28,4 +28,7 @@ public class Sales {
     @ManyToOne
     @JoinColumn(name = "idEmpleado")
     private Empleado idempleado;
+
+    public void setIdempleado(Long id) {
+    }
 }

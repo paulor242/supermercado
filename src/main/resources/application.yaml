@@ -1,36 +1,33 @@
 server:
-  port: 3306
+  port: 9090
   servlet:
     context-path: /api/v1
 spring:
   application:
     name: supermercado
-
-  # Base de datos H2 en memoria — misma config que application.properties
   datasource:
     url: jdbc:mysql://localhost:3306/supermercado
     username: root
-    password: 
+    password: paulo3144615 #cambiar contraseña
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: none
     show-sql: true
-    defer-datasource-initialization: true
-
-  sql:
-    init:
-      mode: always
-
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
 
 logging:
   level:
     org.springframework.web: DEBUG
     org.hibernate.SQL: DEBUG
-    # Typo corregido: era 'hibernxxaate' — ahora muestra los parámetros de cada query
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernxxaate.type.descriptor.sql.BasicBinder: TRACE
+
+security:
+  jwt:
+    secret-key: alht7XYKujQPw1ourB0c4rIRg4x6RNrqewufShlZoug=
+    tokenExpiration: 600000

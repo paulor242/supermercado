@@ -5,6 +5,16 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
+/**
+ * Entidad que representa el detalle de una venta — es decir, cada línea de producto.
+ * Una venta (Sales) puede tener muchos detalles: uno por cada producto comprado.
+ * La tabla en BD se llama "detailSale".
+ */
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.math.BigDecimal;
+
 @Entity
 @Data
 @Table (name ="detailSale")

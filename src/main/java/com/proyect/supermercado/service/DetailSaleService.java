@@ -18,31 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Servicio con la lógica de negocio para los detalles de venta.
- * Necesita acceso a SalesRepository porque al crear un detalle
- * hay que verificar que la venta padre realmente exista en BD.
- */
-import com.proyect.supermercado.dto.DetailSaleRequestDTO;
-import com.proyect.supermercado.dto.DetailSaleResponseDTO;
-import com.proyect.supermercado.dto.SaleResponseDTO;
-import com.proyect.supermercado.entity.DetailSale;
-import com.proyect.supermercado.entity.Product;
-import com.proyect.supermercado.entity.Sales;
-import com.proyect.supermercado.repository.DetailSalesRepository;
-import com.proyect.supermercado.repository.ProductRepository;
-import com.proyect.supermercado.repository.SalesRepository;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+
 
 @Transactional
 @RequiredArgsConstructor
@@ -71,9 +48,13 @@ public class DetailSaleService {
 
         DetailSale detailSale = new DetailSale();
         detailSale.setAmount(request.getAmount());
-        detailSale.setUnitPrice(unitPrice);
-        detailSale.setSubTotal(subTotal);
-        detailSale.setIdProduct(product);
+        detailSale.setSubTotal(request.getSubTotal());
+        detailSale.setUnitPrice(request.getUnitPrice());
+
+
+
+        Sales sale = salesRepository.findById(request.getSales())
+                .orElseThrow(() -> new RuntimeException("venta no encontrada"));
         detailSale.setSales(sale);
 
         detailSalesRepository.save(detailSale);
