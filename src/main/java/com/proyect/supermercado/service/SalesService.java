@@ -2,6 +2,7 @@ package com.proyect.supermercado.service;
 
 import com.proyect.supermercado.dto.SaleRequestDTO;
 import com.proyect.supermercado.dto.SaleResponseDTO;
+import com.proyect.supermercado.entity.Empleado;
 import com.proyect.supermercado.repository.SalesRepository;
 import com.proyect.supermercado.entity.Sales;
 import jakarta.transaction.Transactional;
@@ -23,6 +24,7 @@ import java.util.Optional;
 public class SalesService {
 
     private final SalesRepository salesRepository;
+    private  final Empleado empleado;
 
     /**
      * Crea una nueva venta a partir de los datos del request.
@@ -33,7 +35,7 @@ public class SalesService {
         sale.setDateSale(request.getDateSale());
         sale.setTotal(request.getTotal());
         sale.setVat(request.getVat());
-        sale.setIdEmpleado(request.getIdEmpleado());
+        sale.setIdempleado(empleado.getId());
         sale.setState(request.getState());
         sale.setSubTotal(request.getSubTotal());
 
@@ -46,7 +48,7 @@ public class SalesService {
         response.setVat(sale.getVat());
         response.setState(sale.getState());
         response.setSubTotal(sale.getSubTotal());
-        response.setIdEmpleado(sale.getIdEmpleado());
+        response.setIdEmpleado(empleado.getId());
 
         return response;
     }
@@ -67,7 +69,8 @@ public class SalesService {
             response.setVat(sale.getVat());
             response.setSubTotal(sale.getSubTotal());
             response.setTotal(sale.getTotal());
-            response.setIdEmpleado(sale.getIdEmpleado());
+            response.setIdEmpleado(empleado.getId());
+
             list.add(response);
         }
         return list;
@@ -83,7 +86,7 @@ public class SalesService {
 
         SaleResponseDTO response = new SaleResponseDTO();
         response.setId(sale.getId());
-        response.setIdEmpleado(sale.getIdEmpleado());
+        response.setIdEmpleado(empleado.getId());
         response.setTotal(sale.getTotal());
         response.setDateSale(sale.getDateSale());
         response.setVat(sale.getVat());
@@ -106,7 +109,7 @@ public class SalesService {
             sale.setVat(request.getVat());
             sale.setSubTotal(request.getSubTotal());
             sale.setDateSale(request.getDateSale());
-            sale.setIdEmpleado(request.getIdEmpleado());
+            sale.setIdempleado(request.getIdEmpleado());
             sale.setState(request.getState());
 
             Sales updateSale = salesRepository.save(sale); // save también sirve para actualizar si el ID ya existe
@@ -117,7 +120,7 @@ public class SalesService {
             response.setVat(updateSale.getVat());
             response.setTotal(updateSale.getTotal());
             response.setState(updateSale.getState());
-            response.setIdEmpleado(updateSale.getIdEmpleado());
+            response.setIdEmpleado(empleado.getId());
             response.setSubTotal(updateSale.getSubTotal());
 
             return Optional.of(response);
@@ -139,4 +142,7 @@ public class SalesService {
         }
         return false;
     }
+
+
+
 }

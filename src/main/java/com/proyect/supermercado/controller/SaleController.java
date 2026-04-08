@@ -6,18 +6,15 @@ import com.proyect.supermercado.service.SalesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * Controlador REST para el CRUD completo de ventas.
- * Base URL: /sale
- * Todas las rutas requieren token JWT — no son públicas.
- */
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/sale")
+@PreAuthorize("hasAnyAuthority('CAJERO', 'ADMINISTRADOR')")
 public class SaleController {
 
     private final SalesService sales;
@@ -32,10 +29,6 @@ public class SaleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    /**
-     * Devuelve todas las ventas registradas.
-     * Si no hay ninguna, devuelve lista vacía con 200 — no un 404.
-     */
     @GetMapping
     public ResponseEntity<List<SaleResponseDTO>> getSale() {
         List<SaleResponseDTO> response = sales.getSales();
@@ -69,7 +62,7 @@ public class SaleController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<SaleResponseDTO> delete(@PathVariable Long id) {
-        boolean deleted = sales.delete(id);
+        Boolean deleted = sales.delete(id);
         if (deleted) {
             return ResponseEntity.noContent().build();
         } else {

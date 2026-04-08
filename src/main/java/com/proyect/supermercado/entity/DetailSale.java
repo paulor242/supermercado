@@ -20,14 +20,9 @@ public class DetailSale {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "amount")
-    private Integer amount; // cantidad de unidades del producto en esta línea
-
-    @Column(name = "unitPrice")
-    private BigDecimal unitPrice; // precio por unidad al momento de la venta
-
-    @Column(name = "subTotal")
-    private BigDecimal subTotal; // amount * unitPrice = subtotal de esta línea
+    @ManyToOne
+    @JoinColumn(name ="idProduct")
+    private Product idProduct;
 
     // TODO: convertir a relación @ManyToOne con la entidad Producto cuando esté disponible
     @Column(name = "idProduct")

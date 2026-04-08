@@ -21,22 +21,10 @@ public class Sales {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "dateSale")
-    private LocalDate dateSale; // fecha en que se realizó la venta
+    @ManyToOne()
+    @JoinColumn(name=" idEmpleado")
+    private Empleado idempleado;
 
-    @Column(name = "subTotal")
-    private BigDecimal SubTotal; // valor antes de impuestos
-
-    @Column(name = "vat")
-    private BigDecimal vat; // IVA aplicado a la venta
-
-    @Column(name = "total")
-    private BigDecimal total; // subTotal + vat = lo que paga el cliente
-
-    @Column(name = "state")
-    private String state; // estado de la venta: ej. "ACTIVA", "ANULADA", "PAGADA"
-
-    // TODO: convertir a relación @ManyToOne con la entidad Empleado cuando esté disponible
-    @Column(name = "idempleado")
-    private Long idEmpleado; // ID del empleado que registró la venta
+    public void setIdempleado(Long id) {
+    }
 }
