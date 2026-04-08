@@ -24,6 +24,26 @@ import java.util.List;
  * Necesita acceso a SalesRepository porque al crear un detalle
  * hay que verificar que la venta padre realmente exista en BD.
  */
+import com.proyect.supermercado.dto.DetailSaleRequestDTO;
+import com.proyect.supermercado.dto.DetailSaleResponseDTO;
+import com.proyect.supermercado.dto.SaleResponseDTO;
+import com.proyect.supermercado.entity.DetailSale;
+import com.proyect.supermercado.entity.Product;
+import com.proyect.supermercado.entity.Sales;
+import com.proyect.supermercado.repository.DetailSalesRepository;
+import com.proyect.supermercado.repository.ProductRepository;
+import com.proyect.supermercado.repository.SalesRepository;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -41,35 +61,24 @@ public class DetailSaleService {
                     "Stock insuficiente. Disponible: " + product.getStock() + ", solicitado: " + request.getAmount());
         }
 
-        Double unitPrice = product.getPrice();
-        BigDecimal subTotal = BigDecimal.valueOf(request.getAmount()).multiply(BigDecimal.valueOf(unitPrice));
+        Sales sale = salesRepository.findById(request.getSales())
+                .orElseThrow(() -> new RuntimeException("venta no encontrada"));
+
+        BigDecimal unitPrice = product.getPrice();
+        BigDecimal subTotal = BigDecimal.valueOf(request.getAmount()).multiply(unitPrice);
         BigDecimal vat = subTotal.multiply(new BigDecimal("0.19"));
         BigDecimal total = subTotal.add(vat);
 
-    private final DetailSalesRepository detailSalesRepository;
-    private final SalesRepository salesRepository;
-
-    /**
-     * Crea un detalle de venta y lo asocia a su venta padre.
-     * Si la venta padre no existe, lanza excepción antes de guardar nada.
-     * La respuesta incluye el objeto completo de la venta embebido.
-     */
-    public DetailSaleResponseDTO create(DetailSaleRequestDTO request) {
         DetailSale detailSale = new DetailSale();
         detailSale.setAmount(request.getAmount());
-        detailSale.setSubTotal(request.getSubTotal());
-        detailSale.setUnitPrice(request.getUnitPrice());
-
-
-
-        // buscamos la venta padre — si no existe, no tiene sentido guardar el detalle
-        Sales sale = salesRepository.findById(request.getSales())
-                .orElseThrow(() -> new RuntimeException("venta no encontrada"));
+        detailSale.setUnitPrice(unitPrice);
+        detailSale.setSubTotal(subTotal);
+        detailSale.setIdProduct(product);
         detailSale.setSales(sale);
 
         detailSalesRepository.save(detailSale);
 
-        product.setStock(product.getStock()-request.getAmount());
+        product.setStock(product.getStock() - request.getAmount());
         productRepository.save(product);
 
         DetailSaleResponseDTO response = new DetailSaleResponseDTO();
@@ -77,18 +86,16 @@ public class DetailSaleService {
         response.setAmount(detailSale.getAmount());
         response.setUnitPrice(detailSale.getUnitPrice());
         response.setSubTotal(detailSale.getSubTotal());
+        response.setIdProduct(product.getId());
 
-        if (detailSale.getSales() != null) {
-            SaleResponseDTO detailDTO = new SaleResponseDTO();
-            detailDTO.setId(detailSale.getSales().getId());
-            detailDTO.setSubTotal(detailSale.getSubTotal());
-            detailDTO.setVat(detailSale.getSales().getVat());
-            detailDTO.setDateSale(detailSale.getSales().getDateSale());
-            detailDTO.setTotal(detailSale.getSales().getTotal());
-            detailDTO.setState(detailSale.getSales().getState());
-            response.setSales((detailDTO));
-        }
-
+        SaleResponseDTO detailDTO = new SaleResponseDTO();
+        detailDTO.setId(sale.getId());
+        detailDTO.setSubTotal(sale.getSubTotal());
+        detailDTO.setVat(sale.getVat());
+        detailDTO.setDateSale(sale.getDateSale());
+        detailDTO.setTotal(total);
+        detailDTO.setState(sale.getState());
+        response.setSales(detailDTO);
 
         return response;
     }
