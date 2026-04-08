@@ -13,83 +13,86 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-
+/**
+ * Servicio con la lógica de negocio para los detalles de venta.
+ * Necesita acceso a SalesRepository porque al crear un detalle
+ * hay que verificar que la venta padre realmente exista en BD.
+ */
 @Transactional
 @RequiredArgsConstructor
 @Service
 public class DetailSaleService {
-    private final DetailSalesRepository detailSalesRepository;
-    private  final SalesRepository salesRepository;
-    public DetailSaleResponseDTO create(DetailSaleRequestDTO request){
 
+    private final DetailSalesRepository detailSalesRepository;
+    private final SalesRepository salesRepository;
+
+    /**
+     * Crea un detalle de venta y lo asocia a su venta padre.
+     * Si la venta padre no existe, lanza excepción antes de guardar nada.
+     * La respuesta incluye el objeto completo de la venta embebido.
+     */
+    public DetailSaleResponseDTO create(DetailSaleRequestDTO request) {
         DetailSale detailSale = new DetailSale();
         detailSale.setAmount(request.getAmount());
         detailSale.setSubTotal(request.getSubTotal());
         detailSale.setUnitPrice(request.getUnitPrice());
         detailSale.setIdProduct(request.getIdProduct());
 
+        // buscamos la venta padre — si no existe, no tiene sentido guardar el detalle
         Sales sale = salesRepository.findById(request.getSales())
-                        .orElseThrow(()->new RuntimeException("venta no encontrada"));
+                .orElseThrow(() -> new RuntimeException("venta no encontrada"));
         detailSale.setSales(sale);
 
         detailSalesRepository.save(detailSale);
 
-        DetailSaleResponseDTO response= new DetailSaleResponseDTO();
+        // construimos la respuesta con el detalle y la venta embebida
+        DetailSaleResponseDTO response = new DetailSaleResponseDTO();
         response.setId(detailSale.getId());
         response.setAmount(detailSale.getAmount());
         response.setUnitPrice(detailSale.getUnitPrice());
         response.setSubTotal(detailSale.getSubTotal());
         response.setIdProduct(detailSale.getIdProduct());
-        if(detailSale.getSales() !=null){
-            SaleResponseDTO detailDTO = new SaleResponseDTO();
-            detailDTO.setId(detailSale.getSales().getId());
-            detailDTO.setSubTotal(detailSale.getSubTotal());
-            detailDTO.setVat(detailSale.getSales().getVat());
-            detailDTO.setDateSale(detailSale.getSales().getDateSale());
-            detailDTO.setTotal(detailSale.getSales().getTotal());
-            detailDTO.setState(detailSale.getSales().getState());
-            detailDTO.setIdEmpleado(detailSale.getSales().getIdEmpleado());
-            response.setSales((detailDTO));
 
+        if (detailSale.getSales() != null) {
+            response.setSales(toSaleDTO(detailSale.getSales()));
         }
 
         return response;
     }
 
-    public List<DetailSaleResponseDTO> get (){
-        List<DetailSale> detailSales =detailSalesRepository.findAll();
+    /**
+     * Devuelve todos los detalles de venta con su venta padre embebida.
+     * Si un detalle no tiene venta asociada (caso raro), el campo sales queda null.
+     */
+    public List<DetailSaleResponseDTO> get() {
+        List<DetailSale> detailSales = detailSalesRepository.findAll();
         List<DetailSaleResponseDTO> list = new ArrayList<>();
 
-        for (DetailSale detailSale: detailSales){
+        for (DetailSale detailSale : detailSales) {
             DetailSaleResponseDTO response = new DetailSaleResponseDTO();
             response.setId(detailSale.getId());
             response.setIdProduct(detailSale.getIdProduct());
             response.setAmount(detailSale.getAmount());
             response.setUnitPrice(detailSale.getUnitPrice());
             response.setSubTotal(detailSale.getSubTotal());
-            if(detailSale.getSales()!=null){
-                SaleResponseDTO responseDTO = new SaleResponseDTO();
-                responseDTO.setId(detailSale.getSales().getId());
-                responseDTO.setVat(detailSale.getSales().getVat());
-                responseDTO.setDateSale(detailSale.getSales().getDateSale());
-                responseDTO.setState(detailSale.getSales().getState());
-                responseDTO.setIdEmpleado(detailSale.getSales().getIdEmpleado());
-                responseDTO.setSubTotal(detailSale.getSales().getSubTotal());
-                responseDTO.setTotal(detailSale.getSales().getTotal());
-                response.setSales(responseDTO);
-            }else {
-                response.setSales(null);
-            }
+
+            // embebemos la venta solo si existe — si no, dejamos null
+            response.setSales(detailSale.getSales() != null ? toSaleDTO(detailSale.getSales()) : null);
+
             list.add(response);
         }
         return list;
     }
 
-    public DetailSaleResponseDTO getForId(Long id){
+    /**
+     * Busca un detalle de venta por su ID.
+     * Si no existe lanza excepción con mensaje descriptivo.
+     */
+    public DetailSaleResponseDTO getForId(Long id) {
         DetailSale detail = detailSalesRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("el id del registro de la venta no fue encontrado "));
+                .orElseThrow(() -> new RuntimeException("el id del registro de la venta no fue encontrado"));
+
         DetailSaleResponseDTO responseDTO = new DetailSaleResponseDTO();
         responseDTO.setId(detail.getId());
         responseDTO.setAmount(detail.getAmount());
@@ -97,24 +100,24 @@ public class DetailSaleService {
         responseDTO.setSubTotal(detail.getSubTotal());
         responseDTO.setUnitPrice(detail.getUnitPrice());
 
-        if (detail.getSales()!= null){
-            SaleResponseDTO response = new SaleResponseDTO();
-            response.setId(detail.getSales().getId());
-            response.setDateSale(detail.getSales().getDateSale());
-            response.setVat(detail.getSales().getVat());
-            response.setIdEmpleado(detail.getSales().getIdEmpleado());
-            response.setTotal(detail.getSales().getTotal());
-            response.setState(detail.getSales().getState());
-            response.setSubTotal(detail.getSales().getSubTotal());
-            responseDTO.setSales(response);
+        responseDTO.setSales(detail.getSales() != null ? toSaleDTO(detail.getSales()) : null);
 
-        }else {
-            responseDTO.setSales(null);
-        }
         return responseDTO;
     }
 
-
-
-
+    /**
+     * Convierte una entidad Sales a su DTO de respuesta.
+     * Método privado reutilizable para no repetir el mismo mapeo en create, get y getForId.
+     */
+    private SaleResponseDTO toSaleDTO(Sales sale) {
+        SaleResponseDTO dto = new SaleResponseDTO();
+        dto.setId(sale.getId());
+        dto.setDateSale(sale.getDateSale());
+        dto.setVat(sale.getVat());
+        dto.setTotal(sale.getTotal());
+        dto.setState(sale.getState());
+        dto.setIdEmpleado(sale.getIdEmpleado());
+        dto.setSubTotal(sale.getSubTotal());
+        return dto;
+    }
 }
