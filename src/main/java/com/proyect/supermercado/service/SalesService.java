@@ -4,8 +4,10 @@ import com.proyect.supermercado.dto.EmpleadoResponseDTO;
 import com.proyect.supermercado.dto.SaleRequestDTO;
 import com.proyect.supermercado.dto.SaleResponseDTO;
 import com.proyect.supermercado.entity.Empleado;
-import com.proyect.supermercado.repository.SalesRepository;
 import com.proyect.supermercado.entity.Sales;
+import com.proyect.supermercado.exception.ResourceNotFoundException;
+import com.proyect.supermercado.repository.EmpleadoRepository;
+import com.proyect.supermercado.repository.SalesRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,7 @@ import java.util.Optional;
 public class SalesService {
 
     private final SalesRepository salesRepository;
-    private  final Empleado empleado;
+    private final EmpleadoRepository empleadoRepository;
 
     /**
      * Crea una nueva venta a partir de los datos del request.
@@ -33,6 +35,9 @@ public class SalesService {
      */
     public SaleResponseDTO saleCreate(SaleRequestDTO request) {
         Sales sale = new Sales();
+        Empleado empleado = empleadoRepository.findById(request.getIdEmpleado())
+                .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado"));
+
         sale.setDateSale(request.getDateSale());
         sale.setTotal(request.getTotal());
         sale.setVat(request.getVat());
@@ -94,7 +99,7 @@ public class SalesService {
 
         SaleResponseDTO response = new SaleResponseDTO();
         response.setId(sale.getId());
-        response.setIdEmpleado(empleado.getId());
+        response.setIdEmpleado(sale.getIdempleado() != null ? sale.getIdempleado().getId() : null);
         response.setTotal(sale.getTotal());
         response.setDateSale(sale.getDateSale());
         response.setVat(sale.getVat());
@@ -122,10 +127,12 @@ public class SalesService {
             sale.setVat(request.getVat());
             sale.setSubTotal(request.getSubTotal());
             sale.setDateSale(request.getDateSale());
-            sale.setIdempleado(request.getIdEmpleado());
+            Empleado empleado = empleadoRepository.findById(request.getIdEmpleado())
+                    .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado"));
+            sale.setIdempleado(empleado);
             sale.setState(request.getState());
 
-            Sales updateSale = salesRepository.save(sale); // save también sirve para actualizar si el ID ya existe
+            Sales updateSale = salesRepository.save(sale);
 
             SaleResponseDTO response = new SaleResponseDTO();
             response.setId(updateSale.getId());

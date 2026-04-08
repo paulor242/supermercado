@@ -37,4 +37,5 @@ public class DetailSale {
     @ManyToOne
     @JoinColumn(name ="idSale")
     private Sales sales;
+
 }

@@ -38,8 +38,11 @@ public class DetailSaleService {
                     "Stock insuficiente. Disponible: " + product.getStock() + ", solicitado: " + request.getAmount());
         }
 
-        Double unitPrice = product.getPrice();
-        BigDecimal subTotal = BigDecimal.valueOf(request.getAmount()).multiply(BigDecimal.valueOf(unitPrice));
+        Sales sale = salesRepository.findById(request.getSales())
+                .orElseThrow(() -> new RuntimeException("venta no encontrada"));
+
+        BigDecimal unitPrice = product.getPrice();
+        BigDecimal subTotal = BigDecimal.valueOf(request.getAmount()).multiply(unitPrice);
         BigDecimal vat = subTotal.multiply(new BigDecimal("0.19"));
         BigDecimal total = subTotal.add(vat);
 
@@ -56,7 +59,7 @@ public class DetailSaleService {
 
         detailSalesRepository.save(detailSale);
 
-        product.setStock(product.getStock()-request.getAmount());
+        product.setStock(product.getStock() - request.getAmount());
         productRepository.save(product);
 
         DetailSaleResponseDTO response = new DetailSaleResponseDTO();
@@ -64,18 +67,16 @@ public class DetailSaleService {
         response.setAmount(detailSale.getAmount());
         response.setUnitPrice(detailSale.getUnitPrice());
         response.setSubTotal(detailSale.getSubTotal());
+        response.setIdProduct(product.getId());
 
-        if (detailSale.getSales() != null) {
-            SaleResponseDTO detailDTO = new SaleResponseDTO();
-            detailDTO.setId(detailSale.getSales().getId());
-            detailDTO.setSubTotal(detailSale.getSubTotal());
-            detailDTO.setVat(detailSale.getSales().getVat());
-            detailDTO.setDateSale(detailSale.getSales().getDateSale());
-            detailDTO.setTotal(detailSale.getSales().getTotal());
-            detailDTO.setState(detailSale.getSales().getState());
-            response.setSales((detailDTO));
-        }
-
+        SaleResponseDTO detailDTO = new SaleResponseDTO();
+        detailDTO.setId(sale.getId());
+        detailDTO.setSubTotal(sale.getSubTotal());
+        detailDTO.setVat(sale.getVat());
+        detailDTO.setDateSale(sale.getDateSale());
+        detailDTO.setTotal(total);
+        detailDTO.setState(sale.getState());
+        response.setSales(detailDTO);
 
         return response;
     }
