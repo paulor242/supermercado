@@ -26,7 +26,7 @@ public class Category {
     private String description;
 
     @Column(name = "active", nullable = false)
-     @Builder.Default
+    @Builder.Default
     private Boolean active = true;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

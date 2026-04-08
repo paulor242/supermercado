@@ -1,5 +1,5 @@
 server:
-  port: 9090
+  port: 3306
   servlet:
     context-path: /api/v1
 spring:
@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/supermercado
     username: root
-    password: paulo3144615 #cambiar contraseña
+    password: 
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:

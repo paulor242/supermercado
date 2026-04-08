@@ -8,11 +8,8 @@ CREATE TABLE IF NOT EXISTS category (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
     description VARCHAR(255),
-    active BOOLEAN NOT NULL DEFAULT TRUE,
-    
-    INDEX idx_category_name (name),
-    INDEX idx_category_active (active)
-) 
+    active BOOLEAN NOT NULL DEFAULT TRUE
+); 
 
 -- 2. TABLA DE PRODUCTOS
 
@@ -31,14 +28,8 @@ CREATE TABLE IF NOT EXISTS product (
         FOREIGN KEY (category_id) 
         REFERENCES category(id)
         ON DELETE RESTRICT    -- No eliminar categoría si tiene productos
-        ON UPDATE CASCADE,
-    
-    -- Índices para optimizar búsquedas
-    INDEX idx_product_barcode (barcode),
-    INDEX idx_product_category (category_id),
-    INDEX idx_product_active (active),
-    INDEX idx_product_name (name)
-)
+        ON UPDATE CASCADE
+);
 
 -- Datos de prueba para el Módulo 1
 -- Categorías y Productos para un supermercado

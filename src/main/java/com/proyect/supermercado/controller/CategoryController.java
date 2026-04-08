@@ -28,7 +28,6 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     /**
-     * GET /api/v1/categories
      * Obtiene todas las categorías activas
      */
     @GetMapping
@@ -37,7 +36,6 @@ public class CategoryController {
     }
 
     /**
-     * GET /api/v1/categories/{id}
      * Obtiene una categoría por ID con sus productos vinculados
      * Regla de Negocio 3: Incluye lista de productos
      */
@@ -47,7 +45,6 @@ public class CategoryController {
     }
 
      /**
-     * POST /api/v1/categories
      * Crea una nueva categoría
      */
     @PostMapping
@@ -56,7 +53,6 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.createCategory(request), HttpStatus.CREATED);
     }
     /**
-     * PUT /api/v1/categories/{id}
      * Actualiza una categoría existente
      */
     @PutMapping("/{id}")
@@ -67,7 +63,6 @@ public class CategoryController {
     }
 
      /**
-     * DELETE /api/v1/categories/{id}
      * Aplica borrado lógico en una categoría
      * Regla de Negocio 1: Soft Delete
      */
