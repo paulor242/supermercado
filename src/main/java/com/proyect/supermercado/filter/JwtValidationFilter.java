@@ -7,12 +7,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.proyect.supermercado.service.JwtService;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
+
+// se realiza la configuracion de todo el jwt se configura que datos son los que va llevar
+//  el jwt se coloca tambien el refresh tocken   y los necesarios revisar el autentication = JwtValidationFilter
+
+
 
 @Component
 @RequiredArgsConstructor

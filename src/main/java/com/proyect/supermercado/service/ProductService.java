@@ -1,0 +1,194 @@
+package com.proyect.supermercado.service;
+
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import com.proyect.supermercado.repository.CategoryRepository;
+import com.proyect.supermercado.repository.ProductRepository;
+import com.proyect.supermercado.dto.ProductRequestDTO;
+import com.proyect.supermercado.dto.ProductResponseDTO;
+import com.proyect.supermercado.entity.Category;
+import com.proyect.supermercado.entity.Product;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class ProductService {
+
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+
+    /**
+     * Crea un nuevo producto
+     * Valida unicidad de código de barras
+     */
+    @Transactional
+    public ProductResponseDTO createProduct(ProductRequestDTO request) {
+        // Regla de Negocio 2: Validar unicidad de barcode
+        if (productRepository.existsByBarcode(request.getBarcode())) {
+            throw new RuntimeException("Ya existe un producto con el código de barras: " + request.getBarcode());
+        }
+
+        // Verificar que la categoría existe y está activa
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ID: " + request.getCategoryId()));
+
+        if (!category.isActive()) {
+            throw new RuntimeException("La categoría está inactiva");
+        }
+
+        Product product = Product.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .barcode(request.getBarcode())
+                .price(request.getPrice())
+                .stock(request.getStock())
+                .active(request.getActive() != null ? request.getActive() : true)
+                .category(category)
+                .build();
+
+        product = productRepository.save(product);
+        return convertToResponse(product);
+    }
+
+    /**
+     * Actualiza un producto existente
+     */
+    @Transactional
+    public ProductResponseDTO updateProduct(Long id, ProductRequestDTO request) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+
+        // Regla de Negocio 2: Validar unicidad de barcode (excluyendo el producto actual)
+        if (!product.getBarcode().equals(request.getBarcode()) && 
+            productRepository.existsByBarcodeAndIdNot(request.getBarcode(), id)) {
+            throw new RuntimeException("Ya existe un producto con el código de barras: " + request.getBarcode());
+        }
+
+        // Verificar categoría si cambia
+        if (!product.getCategory().getId().equals(request.getCategoryId())) {
+            Category newCategory = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ID: " + request.getCategoryId()));
+            product.setCategory(newCategory);
+        }
+
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setBarcode(request.getBarcode());
+        product.setPrice(request.getPrice());
+        product.setStock(request.getStock());
+        if (request.getActive() != null) {
+            product.setActive(request.getActive());
+        }
+
+        product = productRepository.save(product);
+        return convertToResponse(product);
+    }
+
+    /**
+     * Actualiza el stock de un producto
+     * Valida que el stock no sea negativo
+     */
+    @Transactional
+    public ProductResponseDTO updateStock(Long id, Integer stock) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+
+        // Validación de stock negativo - Regla de negocio
+        if (stock < 0) {
+            throw new IllegalArgumentException("El stock no puede ser negativo. Valor proporcionado: " + stock);
+        }
+
+        product.setStock(stock);
+        product = productRepository.save(product);
+        return convertToResponse(product);
+    }
+
+    /**
+     * Aplica borrado lógico en un producto
+     * Regla de Negocio 1: Soft Delete
+     */
+    @Transactional
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+        
+        // Soft delete: solo desactivar, no eliminar físicamente
+        product.softDelete();
+        productRepository.save(product);
+    }
+
+    /**
+     * Obtiene todos los productos activos
+     */
+    public List<ProductResponseDTO> getAllProducts() {
+        return productRepository.findByActiveTrueOrderByNameAsc()
+                .stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Obtiene un producto por ID
+     */
+    public ProductResponseDTO getProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+        
+        if (!product.isActive()) {
+            throw new RuntimeException("El producto está inactivo/eliminado");
+        }
+        
+        return convertToResponse(product);
+    }
+
+     /**
+     * Busca productos por código de barras
+     * Regla de Negocio 2: Validación de unicidad
+     */
+    public ProductResponseDTO getProductByBarcode(String barcode) {
+        Product product = productRepository.findByBarcode(barcode)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con barcode: " + barcode));
+        
+        return convertToResponse(product);
+    }
+
+    /**
+     * Obtiene productos por categoría
+     */
+    public List<ProductResponseDTO> getProductsByCategory(Long categoryId) {
+        // Verificar que la categoría existe
+        categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada con ID: " + categoryId));
+
+        return productRepository.findByCategoryIdAndActiveTrueOrderByNameAsc(categoryId)
+                .stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Convierte entidad a DTO de respuesta
+     */
+    private ProductResponseDTO convertToResponse(Product product) {
+        ProductResponseDTO.CategorySummary categorySummary = ProductResponseDTO.CategorySummary.builder()
+                .id(product.getCategory().getId())
+                .name(product.getCategory().getName())
+                .build();
+
+        return ProductResponseDTO.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .description(product.getDescription())
+                .barcode(product.getBarcode())
+                .price(product.getPrice())
+                .stock(product.getStock())
+                .active(product.getActive())
+                .category(categorySummary)
+                .build();
+    }
+
+}
