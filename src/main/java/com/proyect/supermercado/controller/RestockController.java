@@ -16,7 +16,6 @@ public class RestockController {
     private RestockService restockService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('AUXILIAR')")
     public ResponseEntity<RestockResponseDTO> createRestock(@RequestBody RestockRequestDTO request) {
         RestockResponseDTO response = restockService.createRestock(request);
         return ResponseEntity.ok(response);

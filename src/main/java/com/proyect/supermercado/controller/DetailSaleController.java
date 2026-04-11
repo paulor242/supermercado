@@ -14,7 +14,6 @@ import java.util.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/details")
-@PreAuthorize("hasAnyAuthority('CAJERO', 'ADMINISTRADOR')")
 public class DetailSaleController {
 
     private final DetailSaleService detailSaleService;

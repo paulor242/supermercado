@@ -3,7 +3,6 @@ package com.proyect.supermercado.service;
 import com.proyect.supermercado.dto.EmpleadoResponseDTO;
 import com.proyect.supermercado.dto.SaleRequestDTO;
 import com.proyect.supermercado.dto.SaleResponseDTO;
-import com.proyect.supermercado.entity.Empleado;
 import com.proyect.supermercado.repository.SalesRepository;
 import com.proyect.supermercado.entity.Sales;
 import jakarta.transaction.Transactional;
@@ -25,7 +24,6 @@ import java.util.Optional;
 public class SalesService {
 
     private final SalesRepository salesRepository;
-    private  final Empleado empleado;
 
     /**
      * Crea una nueva venta a partir de los datos del request.
@@ -38,9 +36,9 @@ public class SalesService {
         sale.setVat(request.getVat());
         sale.setState(request.getState());
         sale.setSubTotal(request.getSubTotal());
+        sale.setIdempleado(request.getIdEmpleado());
 
-
-        salesRepository.save(sale); // después del save, sale.getId() ya tiene el ID de la BD
+        salesRepository.save(sale);
 
         SaleResponseDTO response = new SaleResponseDTO();
         response.setId(sale.getId());
@@ -50,10 +48,10 @@ public class SalesService {
         response.setState(sale.getState());
         response.setSubTotal(sale.getSubTotal());
 
-        if (sale.getIdempleado()!=null){
-            EmpleadoResponseDTO responseDTO= new EmpleadoResponseDTO();
-            responseDTO.setId(sale.getIdempleado().getId());
+        if (sale.getIdempleado() != null) {
+            response.setIdEmpleado(sale.getIdempleado().getId());
         }
+
         return response;
     }
 
@@ -74,9 +72,8 @@ public class SalesService {
             response.setSubTotal(sale.getSubTotal());
             response.setTotal(sale.getTotal());
 
-            if (sale.getIdempleado()!=null){
-                EmpleadoResponseDTO responseDTO= new EmpleadoResponseDTO();
-                responseDTO.setId(sale.getIdempleado().getId());
+            if (sale.getIdempleado() != null) {
+                response.setIdEmpleado(sale.getIdempleado().getId());
             }
 
             list.add(response);
@@ -94,16 +91,14 @@ public class SalesService {
 
         SaleResponseDTO response = new SaleResponseDTO();
         response.setId(sale.getId());
-        response.setIdEmpleado(empleado.getId());
         response.setTotal(sale.getTotal());
         response.setDateSale(sale.getDateSale());
         response.setVat(sale.getVat());
         response.setSubTotal(sale.getSubTotal());
         response.setState(sale.getState());
 
-        if (sale.getIdempleado()!=null){
-            EmpleadoResponseDTO responseDTO= new EmpleadoResponseDTO();
-            responseDTO.setId(sale.getIdempleado().getId());
+        if (sale.getIdempleado() != null) {
+            response.setIdEmpleado(sale.getIdempleado().getId());
         }
 
         return response;
@@ -125,7 +120,7 @@ public class SalesService {
             sale.setIdempleado(request.getIdEmpleado());
             sale.setState(request.getState());
 
-            Sales updateSale = salesRepository.save(sale); // save también sirve para actualizar si el ID ya existe
+            Sales updateSale = salesRepository.save(sale);
 
             SaleResponseDTO response = new SaleResponseDTO();
             response.setId(updateSale.getId());
@@ -133,16 +128,15 @@ public class SalesService {
             response.setVat(updateSale.getVat());
             response.setTotal(updateSale.getTotal());
             response.setState(updateSale.getState());
-            response.setIdEmpleado(empleado.getId());
             response.setSubTotal(updateSale.getSubTotal());
-            if (sale.getIdempleado()!=null){
-                EmpleadoResponseDTO responseDTO= new EmpleadoResponseDTO();
-                responseDTO.setId(sale.getIdempleado().getId());
+
+            if (updateSale.getIdempleado() != null) {
+                response.setIdEmpleado(updateSale.getIdempleado().getId());
             }
 
             return Optional.of(response);
         } else {
-            return Optional.empty(); // el controlador lanzará excepción si llega aquí
+            return Optional.empty();
         }
     }
 
@@ -153,13 +147,10 @@ public class SalesService {
     public boolean delete(Long id) {
         Optional<Sales> sales = salesRepository.findById(id);
 
-        if (sales.isPresent()) { // isPresent() es más claro que !isEmpty()
+        if (sales.isPresent()) {
             salesRepository.delete(sales.get());
             return true;
         }
         return false;
     }
-
-
-
 }

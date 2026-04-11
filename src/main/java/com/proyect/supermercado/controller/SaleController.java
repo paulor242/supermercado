@@ -14,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/sale")
-@PreAuthorize("hasAnyAuthority('CAJERO', 'ADMINISTRADOR')")
 public class SaleController {
 
     private final SalesService sales;
