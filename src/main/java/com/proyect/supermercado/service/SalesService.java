@@ -73,7 +73,6 @@ public class SalesService {
 
         SaleResponseDTO response = new SaleResponseDTO();
         response.setId(sale.getId());
-    
         if (sale.getIdempleado() != null) {
             response.setIdEmpleado(sale.getIdempleado().getId());
         }
