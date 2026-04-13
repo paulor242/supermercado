@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.proyect.supermercado.service.ProductService;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 
@@ -23,7 +22,7 @@ import com.proyect.supermercado.dto.ProductRequestDTO;
 import com.proyect.supermercado.dto.ProductResponseDTO;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class ProductController {
@@ -73,8 +72,7 @@ public class ProductController {
      * Crea un nuevo producto
      */
     @PostMapping
-    public ResponseEntity<ProductResponseDTO> createProduct(
-            @Valid @RequestBody ProductRequestDTO request) {
+    public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody ProductRequestDTO request) {
         return new ResponseEntity<>(productService.createProduct(request), HttpStatus.CREATED);
     }
 
@@ -84,8 +82,7 @@ public class ProductController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> updateProduct(
-            @PathVariable Long id,
-            @Valid @RequestBody ProductRequestDTO request) {
+            @PathVariable Long id, @RequestBody ProductRequestDTO request) {
         return ResponseEntity.ok(productService.updateProduct(id, request));
     }
 

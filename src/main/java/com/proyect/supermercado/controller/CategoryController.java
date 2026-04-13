@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.proyect.supermercado.service.CategoryService;
 
-import jakarta.validation.Valid;
+
 
 import com.proyect.supermercado.dto.CategoryRequestDTO;
 import com.proyect.supermercado.dto.CategoryResponseDTO;
 import lombok.RequiredArgsConstructor;
 import java.util.List;
 @RestController
-@RequestMapping("/api/v1/categories")
+@RequestMapping("/categories")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class CategoryController {
@@ -48,8 +48,7 @@ public class CategoryController {
      * Crea una nueva categoría
      */
     @PostMapping
-    public ResponseEntity<CategoryResponseDTO> createCategory(
-            @Valid @RequestBody CategoryRequestDTO request) {
+    public ResponseEntity<CategoryResponseDTO> createCategory( @RequestBody CategoryRequestDTO request) {
         return new ResponseEntity<>(categoryService.createCategory(request), HttpStatus.CREATED);
     }
     /**
@@ -57,8 +56,7 @@ public class CategoryController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDTO> updateCategory(
-            @PathVariable Long id,
-            @Valid @RequestBody CategoryRequestDTO request) {
+            @PathVariable Long id, @RequestBody CategoryRequestDTO request) {
         return ResponseEntity.ok(categoryService.updateCategory(id, request));
     }
 

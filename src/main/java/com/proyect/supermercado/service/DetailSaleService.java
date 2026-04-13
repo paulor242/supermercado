@@ -53,9 +53,9 @@ public class DetailSaleService {
 
 
 
-        Sales sale = salesRepository.findById(request.getSales())
+        Sales sales = salesRepository.findById(request.getSales())
                 .orElseThrow(() -> new RuntimeException("venta no encontrada"));
-        detailSale.setSales(sale);
+        detailSale.setSales(sales);
 
         detailSalesRepository.save(detailSale);
 

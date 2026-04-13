@@ -1,6 +1,6 @@
 package com.proyect.supermercado.dto;
 import com.proyect.supermercado.enume.Cargo;
-import jakarta.validation.constraints.*;
+
 import lombok.Data;
 
 import java.time.LocalDate;
