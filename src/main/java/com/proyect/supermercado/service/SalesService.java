@@ -19,7 +19,6 @@ import java.util.Optional;
 public class SalesService {
 
     private final SalesRepository salesRepository;
-    // ❌ ELIMINADO: private final Empleado empleado;
 
     public SaleResponseDTO saleCreate(SaleRequestDTO request) {
         Sales sale = new Sales();
@@ -74,7 +73,7 @@ public class SalesService {
 
         SaleResponseDTO response = new SaleResponseDTO();
         response.setId(sale.getId());
-        // ✅ CORREGIDO: usar sale.getIdempleado() en lugar de empleado.getId()
+    
         if (sale.getIdempleado() != null) {
             response.setIdEmpleado(sale.getIdempleado().getId());
         }
