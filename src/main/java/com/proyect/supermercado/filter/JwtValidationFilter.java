@@ -28,7 +28,6 @@ public class JwtValidationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // ✅ RUTAS PÚBLICAS - No requieren token
         if (path.contains("/register") ||
                 path.contains("/login") ||
                 path.contains("/refresh")) {
