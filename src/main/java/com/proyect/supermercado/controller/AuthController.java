@@ -1,39 +1,47 @@
 package com.proyect.supermercado.controller;
 
 
-import com.proyect.supermercado.entity.User;
+import com.proyect.supermercado.dto.LoginRequestDTO;
+import com.proyect.supermercado.dto.LoginResponseDTO;
+import com.proyect.supermercado.dto.MessageResponseDTO;
+import com.proyect.supermercado.dto.RegisterRequestDTO;
 import com.proyect.supermercado.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.proyect.supermercado.service.AuthService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import com.proyect.supermercado.service.JwtService;
 
-import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/user")
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final  AuthService authService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    @PostMapping("/register")
+    public ResponseEntity<MessageResponseDTO> register(@RequestBody RegisterRequestDTO requestDTO){
+        try {
+            MessageResponseDTO response= authService.register(requestDTO);
+            return  ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
-        String username = credentials.get("username");
-        String password = credentials.get("password");
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO requestDTO) {
+        try{
+            LoginResponseDTO responseDTO = authService.login(requestDTO);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        if (passwordEncoder.matches(password, user.getPassword())) {
-            String roles = String.join(",", user.getRoles());
-            return ResponseEntity.ok("sesion iniciada con exito");
-        } else {
-            return ResponseEntity.status(401).body("Invalid credentials");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 }

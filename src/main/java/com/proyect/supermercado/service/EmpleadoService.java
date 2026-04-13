@@ -25,17 +25,17 @@ public class EmpleadoService {
 
     public List<EmpleadoResponseDTO> listarPorCargo(Cargo cargo)
     {return repository.findByCargo(cargo)
-     .stream()        
+     .stream()
      .map(EmpleadoMapper::toDTO)
      .collect(Collectors.toList());}
 
-    public List<EmpleadoResponseDTO> listarPorRangoFechas(LocalDate inicio, LocalDate fin) 
+    public List<EmpleadoResponseDTO> listarPorRangoFechas(LocalDate inicio, LocalDate fin)
     {return repository.findByFechaIngresoBetween(inicio, fin)
      .stream()
      .map(EmpleadoMapper::toDTO)
      .collect(Collectors.toList());}
 
-    public EmpleadoResponseDTO obtenerPorId(Long id) 
+    public EmpleadoResponseDTO obtenerPorId(Long id)
     {Empleado e = repository.findById(id)
      .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado"));
      return EmpleadoMapper.toDTO(e);}}

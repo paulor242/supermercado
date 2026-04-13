@@ -1,0 +1,316 @@
+{
+  "info": {
+    "_postman_id": "53e407d7-6867-4cf8-9bcc-7902cee7c89f",
+    "name": "supermercado",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45482707"
+  },
+  "item": [
+    {
+      "name": "http://localhost:9090/api/v1/auth/user/register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userName\": \"carlos123\",\r\n  \"password\": \"paulo123\",\r\n  \"rol\": \"ADMIN\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/v1/auth/user/register",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "user",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:9090/api/v1/auth/user/login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userName\": \"carlos123\",\r\n  \"password\": \"paulo123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/v1/auth/user/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "user",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:9090/api/v1/auth/sale",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6IkFETUlOIiwiaWF0IjoxNzc2MDQwNDY4LCJleHAiOjE3NzYwNDEwNjh9.Z9X_IJXmjI_OyLxsweljvUA7bPM4mrINB7_Z5PsmPgU",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"dateSale\":\"2023-04-01\",\r\n    \"subTotal\":\"100.00\",\r\n    \"vat\":\"10.00\",\r\n    \"total\":\"110.00\",  \r\n    \"state\":\"active\",\r\n    \"idempleado\": \"1\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/v1/auth/sale",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "sale"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:9090/api/v1/auth/sale",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6IkFETUlOIiwiaWF0IjoxNzc2MDQwNDY4LCJleHAiOjE3NzYwNDEwNjh9.Z9X_IJXmjI_OyLxsweljvUA7bPM4mrINB7_Z5PsmPgU",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:9090/api/v1/auth/sale",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "sale"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:9090/api/v1/auth/sale/1",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6IkFETUlOIiwiaWF0IjoxNzc2MDQxODM2LCJleHAiOjE3NzYwNDI0MzZ9.9z9l3kPhZ3up-Xggt99O5dZ2Q6pwQf7eriWTH_UvOJ4",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"dateSale\": \"2023-04-01\",\r\n    \"state\": \"pending\",\r\n    \"subTotal\": 100.00,\r\n    \"total\": 110.00,\r\n    \"vat\": 10.00,\r\n    \"idempleado\":\"1\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/v1/auth/sale/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "sale",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:9090/api/v1/empleados",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6IkFETUlOIiwiaWF0IjoxNzc1OTU4OTE0LCJleHAiOjE3NzU5NTk1MTR9.BokER_OGV2Fq7cOjvhZXZVbwg6X7McKoVvs4nR0bcgg",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"cedula\":\"12345\",\r\n    \"nombre\":\"jose\",\r\n    \"fecha\":\"2023-04-01\",\r\n    \"fechaIngreso\":\"2026-05-03\",\r\n    \"salaro\":\"1000000\",\r\n    \"cargo\":\"gerente\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/v1/empleados",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "v1",
+            "empleados"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:9090/api/v1/auth/categories",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6IkFETUlOIiwiaWF0IjoxNzc2MDQwODM1LCJleHAiOjE3NzYwNDE0MzV9.qlsi2aFx1GcylY6NZjJDyP7IIp5pkDLuPvl8BNy0iRY",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\":\"ropa\",\r\n    \"edscription\":\"ropa de invierno\",\r\n    \"active\":\"true\",\r\n    \"products\":\"1\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/v1/auth/categories",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "categories"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:9090/api/v1/auth/categories/1",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6IkFETUlOIiwiaWF0IjoxNzc2MDQxNDU1LCJleHAiOjE3NzYwNDIwNTV9.YGVEMUbrbn8Zkmy8D4zxHSof0MaCbFcRjTtCN5Jje6I",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:9090/api/v1/auth/categories/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "categories",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:9090/api/v1/auth/details",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6IkFETUlOIiwiaWF0IjoxNzc2MDQxODM2LCJleHAiOjE3NzYwNDI0MzZ9.9z9l3kPhZ3up-Xggt99O5dZ2Q6pwQf7eriWTH_UvOJ4",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"amount\": \"100\",\r\n    \"unitPrice\":\"20\",\r\n    \"subTotal\":\"200\",\r\n    \"idProduct\":\"1\",\r\n    \"sales\":\"1\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:9090/api/v1/auth/details",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "9090",
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "details"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
