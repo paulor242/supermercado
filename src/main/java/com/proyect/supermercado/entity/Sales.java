@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-@Table(name ="sales")
+@Table(name ="sale")
 public class Sales {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class Sales {
     private String state;
 
     @ManyToOne
-    @JoinColumn(name = "idEmpleado")
+    @JoinColumn(name = "idEmployee")
     private Empleado idempleado;
 
     public void setIdempleado(Long id) {

@@ -5,7 +5,6 @@ import com.proyect.supermercado.dto.RestockResponseDTO;
 import com.proyect.supermercado.service.RestockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,7 +15,6 @@ public class RestockController {
     private RestockService restockService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMINISTRADOR') or hasRole('AUXILIAR')")
     public ResponseEntity<RestockResponseDTO> createRestock(@RequestBody RestockRequestDTO request) {
         RestockResponseDTO response = restockService.createRestock(request);
         return ResponseEntity.ok(response);

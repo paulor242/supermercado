@@ -1,65 +1,62 @@
 package com.proyect.supermercado.service;
 
-import java.util.Optional;
-
 import com.proyect.supermercado.dto.LoginRequestDTO;
 import com.proyect.supermercado.dto.LoginResponseDTO;
 import com.proyect.supermercado.dto.MessageResponseDTO;
-import com.proyect.supermercado.dto.UserRequestDTO;
+import com.proyect.supermercado.dto.RegisterRequestDTO;
 import com.proyect.supermercado.entity.User;
 import com.proyect.supermercado.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.RequiredArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserAuthService {
+public class AuthService {
+
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public MessageResponseDTO register(UserRequestDTO request) {
+    public MessageResponseDTO register(RegisterRequestDTO request) {
         MessageResponseDTO response = new MessageResponseDTO();
-        Optional<User> userExist = userRepository.findByUsername(request.getUserName());
+
+        Optional<User> userExist = userRepository.findByUserName(request.getUserName());
         if (userExist.isPresent()) {
-            response.setMessage("Este correo ya está registrado");
+            response.setMessage("Este usuario ya está registrado");
             return response;
         }
+
         User user = new User();
-        user.setUsername(request.getUserName());
+        user.setUserName(request.getUserName());
         user.setRol(request.getRol().toUpperCase());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
 
         userRepository.save(user);
 
         response.setMessage("Registro exitoso");
-
         return response;
     }
 
     public LoginResponseDTO login(LoginRequestDTO request) {
-        Optional<User> userOptional = userRepository.findByUsername(request.getUserName());
         LoginResponseDTO response = new LoginResponseDTO();
 
-        if (userOptional.isPresent()) {
-            response.setMessaje("Este usuario no está registrado");
+        Optional<User> userOptional = userRepository.findByUserName(request.getUserName());
+
+        if (userOptional.isEmpty()) {
+            response.setMessage("Usuario no encontrado");
             return response;
         }
-
-
         User user = userOptional.get();
-
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Contraseña o correo incorrectos");
+        if (!BCrypt.checkpw(request.getPassword(), user.getPassword())) {
+            response.setMessage("Contraseña incorrecta");
+            return response;
         }
-
-        String token = jwtService.generateToken(user.getId(), user.getUsername(), user.getRol());
-
-        response.setMessaje("Inicio de sesión exitoso");
+        String token = jwtService.generateToken(user.getId(), user.getUserName(), user.getRol());
+        response.setMessage("Inicio de sesión exitoso");
         response.setJwt(token);
         return response;
     }
-
 }
